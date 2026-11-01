@@ -116,7 +116,11 @@ Current workflows:
 
 - `ci.yml`: runs on pull requests and pushes to `main`; installs dependencies, runs backend tests, runs frontend tests, builds the frontend, and validates backend/frontend Docker builds.
 - `docker-publish.yml`: runs on pushes to `main` that affect backend Docker publishing files, plus manual `workflow_dispatch`; logs in to GHCR with `GITHUB_TOKEN`, builds from `./server`, and publishes `latest` plus the commit SHA tag.
-- `firebase-hosting.yml`: runs after a successful `CI` workflow on `main`, plus manual `workflow_dispatch`; builds the frontend and deploys `client/build` to Firebase Hosting.
+- `firebase-hosting.yml`: runs after successful push CI on `main`, plus manual `workflow_dispatch` on `main`; checks out the tested commit, builds the frontend, deploys `client/build` to Firebase Hosting, and verifies the live source commit at `/build-info.json`.
+
+Firebase deployment uses the existing `FIREBASE_SERVICE_ACCOUNT_SILENTAUCTIONAPP_4CA96` Actions secret, with `FIREBASE_SERVICE_ACCOUNT` supported as a fallback. The Firebase project is selected explicitly in the workflow.
+
+Before automatic deployments, configure the eight `REACT_APP_*` names listed in `client/.env.example` as repository Actions secrets or variables. The workflow validates their presence before building and reports missing names without printing values. Keep private backend credentials and service-account keys out of all `REACT_APP_*` settings.
 
 ## Deployment
 
