@@ -1,4 +1,5 @@
-const admin = require('firebase-admin');
+const { cert, getApps, initializeApp } = require('firebase-admin/app');
+const { getAuth } = require('firebase-admin/auth');
 
 function normalizePrivateKey(privateKey) {
   return privateKey.replace(/\\n/g, '\n');
@@ -51,13 +52,13 @@ function getServiceAccount() {
 }
 
 function getAdminAuth() {
-  if (!admin.apps.length) {
-    admin.initializeApp({
-      credential: admin.credential.cert(getServiceAccount()),
+  if (!getApps().length) {
+    initializeApp({
+      credential: cert(getServiceAccount()),
     });
   }
 
-  return admin.auth();
+  return getAuth();
 }
 
 module.exports = {
